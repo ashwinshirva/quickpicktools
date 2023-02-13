@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+option go_package = "github.com/quickpicktools/grpc-translator;grpc_translator";
+
+import "google/api/annotations.proto";
+
+package grpc_translator;
+
+message HomepageRequest {
+  string message = 1;
+}
+
+message HomepageRespone {
+  string message = 1;
+}
+
+service Frontend {
+ // Homepage rpc
+  rpc Homepage (HomepageRequest) returns (HomepageRespone) {
+    option (google.api.http) = {
+       post: "/"
+       body: "*"
+    };
+  }
+}
