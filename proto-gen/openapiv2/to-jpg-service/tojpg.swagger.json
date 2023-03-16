@@ -1,0 +1,117 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "to-jpg-service/tojpg.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "ToJpgService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/to-jpg/png-to-jpg": {
+      "post": {
+        "operationId": "ToJpgService_PngToJpg",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/protoPngToJpgResp"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/googlerpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/protoPngToJpgReq"
+            }
+          }
+        ],
+        "tags": [
+          "ToJpgService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "googlerpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "protoPngToJpgReq": {
+      "type": "object",
+      "properties": {
+        "imageUrl": {
+          "type": "string"
+        }
+      }
+    },
+    "protoPngToJpgResp": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "$ref": "#/definitions/protoResponseStatus"
+        }
+      }
+    },
+    "protoResponseStatus": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "$ref": "#/definitions/protoStatus"
+        },
+        "description": {
+          "type": "string"
+        }
+      }
+    },
+    "protoStatus": {
+      "type": "string",
+      "enum": [
+        "NOT_DEFINED",
+        "SUCCESS",
+        "FAILURE"
+      ],
+      "default": "NOT_DEFINED"
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    }
+  }
+}
