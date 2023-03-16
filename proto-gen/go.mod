@@ -1,3 +1,3 @@
-module github.com/quickpicktools/proto-gen
+module github.com/ashwinshirva/quickpicktools/proto-gen
 
 go 1.19
