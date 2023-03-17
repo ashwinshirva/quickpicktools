@@ -68,11 +68,34 @@
         }
       }
     },
+    "protoImage": {
+      "type": "object",
+      "properties": {
+        "metadata": {
+          "$ref": "#/definitions/protoImageMetadata"
+        },
+        "data": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "protoImageMetadata": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        }
+      }
+    },
     "protoPngToJpgReq": {
       "type": "object",
       "properties": {
         "imageUrl": {
           "type": "string"
+        },
+        "image": {
+          "$ref": "#/definitions/protoImage"
         }
       }
     },
@@ -81,6 +104,9 @@
       "properties": {
         "status": {
           "$ref": "#/definitions/protoResponseStatus"
+        },
+        "ConvertedImageUrl": {
+          "type": "string"
         }
       }
     },
