@@ -1,0 +1,46 @@
+syntax="proto3";
+ 
+package proto;
+ 
+option go_package = "github.com/quickpicktools/to-jpg-worker";
+
+import "google/api/annotations.proto";
+ 
+message PngToJpgReq {
+   string image_url = 1;
+   Image image = 2;
+}
+
+message Image {
+   ImageMetadata metadata = 1;
+   bytes data = 2;
+}
+
+message ImageMetadata {
+   string name = 1;
+}
+ 
+message PngToJpgResp {
+   ResponseStatus status = 1;
+   string ConvertedImageUrl =2;
+}
+ 
+service ToJpgService {
+   rpc PngToJpg(PngToJpgReq) returns (PngToJpgResp) {
+      option (google.api.http) = {
+         post: "/to-jpg/png-to-jpg"
+         body: "*"
+      };
+   }
+}
+
+message ResponseStatus {
+   Status status = 1;
+   string description = 2;
+}
+
+enum Status {
+   NOT_DEFINED = 0;
+   SUCCESS = 1;
+   FAILURE = 2;
+}
