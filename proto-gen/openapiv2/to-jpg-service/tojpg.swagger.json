@@ -109,8 +109,7 @@
           "type": "string"
         },
         "convertedImage": {
-          "type": "string",
-          "format": "byte"
+          "$ref": "#/definitions/protoImage"
         }
       }
     },
