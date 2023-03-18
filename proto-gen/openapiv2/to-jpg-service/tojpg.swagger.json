@@ -107,6 +107,10 @@
         },
         "ConvertedImageUrl": {
           "type": "string"
+        },
+        "convertedImage": {
+          "type": "string",
+          "format": "byte"
         }
       }
     },
