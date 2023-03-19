@@ -1,7 +1,9 @@
 package image
 
 import (
+	"bytes"
 	"errors"
+	"io"
 	"os"
 	"strings"
 
@@ -29,4 +31,22 @@ func ConvertedImageName(originalImgName, convertedImageFiletype string) (string,
 	splitStr := strings.Split(originalImgName, ".")
 
 	return splitStr[0] + "_converted." + convertedImageFiletype, nil
+}
+
+// ConvertImageToBytes converts the given image into a byte stream
+func ConvertImageToBytes(filePath string) ([]byte, error) {
+	// Load the image file
+	imgFile, err := os.Open(filePath)
+	if err != nil {
+		log.Error("ConvertImageToBytes::Error opening image file: ", err)
+		return nil, err
+	}
+	defer imgFile.Close()
+
+	fileBuf := bytes.NewBuffer(nil)
+	if _, err := io.Copy(fileBuf, imgFile); err != nil {
+		log.Error("ConvertImageToBytes::Error writing JPG image to buffer: ", err)
+		return nil, err
+	}
+	return fileBuf.Bytes(), nil
 }
