@@ -1,4 +1,4 @@
-module github.com/quickpicktools/qpt-lib
+module github.com/ashwinshirva/quickpicktools/qpt-lib
 
 go 1.20
 
