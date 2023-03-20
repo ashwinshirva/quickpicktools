@@ -23,6 +23,7 @@ message ImageMetadata {
 message PngToJpgResp {
    ResponseStatus status = 1;
    string ConvertedImageUrl =2;
+   Image converted_image = 3;
 }
  
 service ToJpgService {

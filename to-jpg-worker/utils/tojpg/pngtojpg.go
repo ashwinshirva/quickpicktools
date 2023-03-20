@@ -2,7 +2,6 @@ package tojpg
 
 import (
 	"bytes"
-	"fmt"
 	"image"
 	"image/color"
 	"image/draw"
@@ -10,19 +9,12 @@ import (
 	"image/png"
 	"os"
 
+	imgLib "github.com/ashwinshirva/quickpicktools/qpt-lib/image"
 	log "github.com/sirupsen/logrus"
 )
 
 // PNGToJPG converts a PNG image to JPG image
 func PNGToJPG(imageName string, imageData []byte) error {
-	/* // Open png image in the given path
-	pngFile, err := os.Open(pathToImage)
-	if err != nil {
-		log.Error("PNGToPDF::Error occured opening png image: ", err)
-		return err
-	}
-	defer pngFile.Close() */
-
 	// byte slice to bytes.Reader, which implements the io.Reader interface
 	reader := bytes.NewReader(imageData)
 
@@ -35,41 +27,41 @@ func PNGToJPG(imageName string, imageData []byte) error {
 	return convertToJPG(imageName, pngImage)
 }
 
+// convertToJPG converts the given source image to JPG image
 func convertToJPG(imageName string, imageSrc image.Image) error {
 	// Create a new Image with the same dimension of PNG image
 	newImg := image.NewRGBA(imageSrc.Bounds())
 
-	// we will use white background to replace PNG's transparent background
-	// you can change it to whichever color you want with
-	// a new color.RGBA{} and use image.NewUniform(color.RGBA{<fill in color>}) function
-
+	// Using white background to replace PNG's transparent background
+	// To change it to other color use a new color.RGBA{}
+	// and use image.NewUniform(color.RGBA{<fill in color>}) function
 	draw.Draw(newImg, newImg.Bounds(), &image.Uniform{color.White}, image.Point{}, draw.Src)
 
-	// paste PNG image OVER to newImage
+	// Paste PNG image OVER to newImage
 	draw.Draw(newImg, newImg.Bounds(), imageSrc, imageSrc.Bounds().Min, draw.Over)
 
-	// create new out JPEG file
-	jpgImgFile, err := os.Create(imageName + "_converted.jpg")
-
-	if err != nil {
-		fmt.Println("Cannot create JPEG-file.jpg !")
-		fmt.Println(err)
-		return err
+	// Get converted image name
+	convImgName, convErr := imgLib.ConvertedImageName(imageName, "jpg")
+	if convErr != nil {
+		log.Error("convertToJPG::Error getting converted image name: ", convErr)
+		return convErr
 	}
 
+	// Create new out JPEG file
+	jpgImgFile, err := os.Create(convImgName)
+	if err != nil {
+		log.Error("convertToJPG::Error creating JPG image file: ", err)
+		return err
+	}
 	defer jpgImgFile.Close()
 
+	// Convert newImage to JPEG encoded byte and save to jpgImgFile with quality = 90
+	// err = jpeg.Encode(jpgImgFile, newImg, nil) -- use nil if ignore quality options
 	var opt jpeg.Options
-	opt.Quality = 80
-
-	// convert newImage to JPEG encoded byte and save to jpgImgFile
-	// with quality = 80
+	opt.Quality = 90
 	err = jpeg.Encode(jpgImgFile, newImg, &opt)
-
-	//err = jpeg.Encode(jpgImgFile, newImg, nil) -- use nil if ignore quality options
-
 	if err != nil {
-		fmt.Println(err)
+		log.Error("convertToJPG::Error encoding to JPG image: ", err)
 		return err
 	}
 	return nil
