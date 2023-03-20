@@ -3,7 +3,8 @@ module github.com/ashwinshirva/quickpicktools/to-jpg-worker
 go 1.19
 
 require (
-	github.com/ashwinshirva/quickpicktools/proto-gen v0.0.0-20230317140104-a73abb31dc9d
+	github.com/ashwinshirva/quickpicktools/proto-gen v0.0.0-20230318115529-e950dc4e98d1
+	github.com/ashwinshirva/quickpicktools/qpt-lib v0.0.0-20230319120327-3e6eae96eccf
 	github.com/sirupsen/logrus v1.9.0
 	google.golang.org/grpc v1.53.0
 )
