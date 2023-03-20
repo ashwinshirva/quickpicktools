@@ -3,7 +3,7 @@ module github.com/ashwinshirva/quickpicktools/grpc-translator
 go 1.19
 
 require (
-	github.com/ashwinshirva/quickpicktools/proto-gen v0.0.0-20230317140104-a73abb31dc9d
+	github.com/ashwinshirva/quickpicktools/proto-gen v0.0.0-20230318115529-e950dc4e98d1
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.15.2
 	github.com/rookie-ninja/rk-grpc v1.2.25
 	github.com/sirupsen/logrus v1.9.0
@@ -28,7 +28,8 @@ require (
 	github.com/gobuffalo/here v0.6.0 // indirect
 	github.com/gogo/protobuf v1.3.1 // indirect
 	github.com/golang-jwt/jwt/v4 v4.2.0 // indirect
-	github.com/golang/protobuf v1.5.2 // indirect
+	github.com/golang/glog v1.1.0 // indirect
+	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/grantae/certinfo v0.0.0-20170412194111-59d56a35515b // indirect
 	github.com/hako/durafmt v0.0.0-20200710122514-c0fb7b4da026 // indirect
@@ -85,8 +86,8 @@ require (
 	golang.org/x/net v0.7.0 // indirect
 	golang.org/x/sys v0.5.0 // indirect
 	golang.org/x/text v0.7.0 // indirect
-	google.golang.org/genproto v0.0.0-20230223222841-637eb2293923 // indirect
-	google.golang.org/protobuf v1.28.1 // indirect
+	google.golang.org/genproto v0.0.0-20230306155012-7f2fa6fef1f4 // indirect
+	google.golang.org/protobuf v1.30.0 // indirect
 	gopkg.in/ini.v1 v1.51.0 // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
