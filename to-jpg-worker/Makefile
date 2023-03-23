@@ -1,7 +1,7 @@
 # Build variables
 APP_NAME=qpt-to-jpg-service
 DOCKER_IMAGE=ashwinshirva/$(APP_NAME)
-DOCKER_TAG=0.0.13
+DOCKER_TAG=0.0.14
 
 # Build the Go binary
 .PHONY: build

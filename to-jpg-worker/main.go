@@ -24,7 +24,9 @@ func main() {
 	log.Infof("Listening on %s", port)
 
 	// Create a new gRPC server
-	grpcServer := grpc.NewServer()
+	grpcServer := grpc.NewServer(
+		grpc.MaxRecvMsgSize(20 * 1024 * 1024),
+	)
 
 	// Register ToJPGService service to gRPC server
 	pb.RegisterToJpgServiceServer(grpcServer, &services.ToJPGService{})

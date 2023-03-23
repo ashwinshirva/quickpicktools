@@ -9,14 +9,10 @@ import (
 	"io/ioutil"
 	"mime/multipart"
 	"net/http"
-	"os"
-	"os/signal"
-	"syscall"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
-	pb "github.com/ashwinshirva/quickpicktools/proto-gen/go/grpc-translator"
 	pbToJpg "github.com/ashwinshirva/quickpicktools/proto-gen/go/to-jpg-service"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	log "github.com/sirupsen/logrus"
@@ -25,38 +21,14 @@ import (
 var toJPGClientConn *grpc.ClientConn
 
 func RegisterServices() {
-
-	/* 	//go shutdownhook()
-
-	   	// Create a listener on TCP port
-	   	lis, err := net.Listen("tcp", ":8082")
-	   	if err != nil {
-	   		log.Fatalln("Failed to listen:", err)
-	   	}
-
-	   	// Create a gRPC server object
-	   	s := grpc.NewServer()
-	   	// Attach the Frontend service to the server
-	   	pb.RegisterFrontendServer(s, &server{})
-	   	// Serve gRPC server
-	   	log.Println("Serving gRPC on 0.0.0.0:8082")
-	   	go func() {
-	   		log.Fatalln(s.Serve(lis))
-	   	}()
-
-	   	test() */
-
+	grpcGatewayPort := "8080"
 	// Create a client connection to the gRPC server we just started
 	// This is where the gRPC-Gateway proxies the requests
 	conn, err := grpc.DialContext(
 		context.Background(),
-		//"0.0.0.0:8089",
 		"qpt-to-jpg-service:8080",
 		grpc.WithBlock(),
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
-		// grpc.MaxCallRecvMsgSize(100*1024*1024), //math.MaxInt32),
-		// grpc.MaxCallSendMsgSize(100*1024*1024), //math.MaxInt32),
-		//grpc.MaxMsgSize(100*1024*1024),
 	)
 	if err != nil {
 		log.Fatalln("Failed to dial server:", err)
@@ -72,25 +44,12 @@ func RegisterServices() {
 		panic(err)
 	}
 
-	// Register Greeter
-	err = pb.RegisterFrontendHandler(context.Background(), gwmux, conn)
-	if err != nil {
-		log.Fatalln("Failed to register gateway:", err)
-	}
-
-	// Register ToJPGService
-	// Register Greeter
-	/* err = pbToJpg.RegisterToJpgServiceHandler(context.Background(), gwmux, conn)
-	if err != nil {
-		log.Fatalln("Failed to register ToJPGService to gateway:", err)
-	} */
-
 	gwServer := &http.Server{
-		Addr:    ":8080",
+		Addr:    ":" + grpcGatewayPort,
 		Handler: gwmux,
 	}
 
-	log.Println("Serving gRPC-Gateway on http://0.0.0.0:8080")
+	log.Println("Serving gRPC-Gateway on http://0.0.0.0:" + grpcGatewayPort)
 	log.Fatalln(gwServer.ListenAndServe())
 }
 
@@ -115,39 +74,11 @@ func handleBinaryFileUpload(w http.ResponseWriter, r *http.Request, params map[s
 	}
 	defer f.Close()
 
-	//
-	// Now do something with the io.Reader in `f`, i.e. read it into a buffer or stream it to a gRPC client side stream.
-	// Also `header` will contain the filename, size etc of the original file.
-	//
-	// Get type, identifier from params
-	/* ofType, ok := params["type"]
-	if !ok {
-		writeErr(http.StatusBadRequest, "Missing 'type' param", w)
-		return
-	}
-
-	identifier, ok := params["identifier"]
-	if !ok {
-		writeErr(http.StatusBadRequest, "Missing 'identifier' param", w)
-		return
-	}
-
-	err = rh.store.Attach(ofType, identifier, header.Filename, f)
-	if err != nil {
-		writeErr(http.StatusInternalServerError, err.Error(), w)
-		return
-	} */
 	pngToJPGResp, pngToJPGErr := DialPngToJpg(header.Filename, f)
 	if pngToJPGErr != nil {
 		log.Error("handleBinaryFileUpload::Error from server: ", pngToJPGErr)
 	}
 
-	//w.WriteHeader(http.StatusOK)
-	// Set the content type to JSON and return the REST response
-	/* w.Header().Set("Content-Type", "image/jpg")
-	json.NewEncoder(w).Encode(pngToJPGResp) */
-
-	//=========================================
 	// Create a new bytes.Buffer object
 	buf := new(bytes.Buffer)
 
@@ -191,29 +122,6 @@ type ImageResponse struct {
 	Image []byte      `json:"image"`
 }
 
-/* func CreateMultipartFile(imgBuf []byte, imgName string) (multipart.File, error) {
-	// create a new multipart buffer
-	buf := new(bytes.Buffer)
-	writer := multipart.NewWriter(buf)
-
-	// add the byte slice as a file field
-	part, err := writer.CreateFormFile("imgfile", imgName)
-	if err != nil {
-		// handle error
-	}
-	_, err = part.Write(imgBuf)
-	if err != nil {
-		// handle error
-	}
-
-	// close the multipart writer
-	err = writer.Close()
-	if err != nil {
-		// handle error
-	}
-	return buf, nil
-} */
-
 func DialPngToJpg(fileName string, file multipart.File) (*pbToJpg.PngToJpgResp, error) {
 	log.Info("DialPngToJpg:: DialPngToJpg() called...")
 
@@ -229,29 +137,5 @@ func DialPngToJpg(fileName string, file multipart.File) (*pbToJpg.PngToJpgResp, 
 		log.Error("DialPngToJpg::Error connecting to worker service: ", toJPGErr)
 		return nil, toJPGErr
 	}
-	//log.Info("DialPngToJpg::Worker service response: ", toJPGResp)
 	return toJPGResp, nil
-}
-
-/* func test(fileName string) {
-	log.Info("Test() called...")
-	conn, err := grpc.Dial("qpt-to-jpg-service:8080", grpc.WithTransportCredentials(insecure.NewCredentials()))
-	if err != nil {
-		log.Error("Error dialling worker: ", err)
-		return
-	}
-	client := pbToJpg.NewToJpgServiceClient(conn)
-	resp, err2 := client.PngToJpg(context.Background(), &pbToJpg.PngToJpgReq{ImageUrl: fileName, Image: &pbToJpg.Image{Metadata: &pbToJpg.ImageMetadata{Name: fileName}, Data: imageData})
-	if err2 != nil {
-		log.Error("Error connecting to worker service: ", err2)
-		return
-	}
-	log.Info("Worker service response: ", resp)
-} */
-
-func shutdownhook() {
-	channel := make(chan os.Signal, 1)
-	signal.Notify(channel, syscall.SIGINT, syscall.SIGTERM)
-	<-channel
-	os.Exit(0)
 }
