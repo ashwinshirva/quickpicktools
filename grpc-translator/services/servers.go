@@ -49,7 +49,7 @@ func RegisterServices() {
 		Handler: gwmux,
 	}
 
-	log.Println("Serving gRPC-Gateway on http://0.0.0.0:" + grpcGatewayPort)
+	log.Info("Serving gRPC-Gateway on http://0.0.0.0:" + grpcGatewayPort)
 	log.Fatalln(gwServer.ListenAndServe())
 }
 
