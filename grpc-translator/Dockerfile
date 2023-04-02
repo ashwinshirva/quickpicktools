@@ -27,7 +27,7 @@ WORKDIR /app
 COPY --from=build /app/app .
 
 # Expose port
-EXPOSE 8092
+EXPOSE 8080
 
 # Set the container command to run the application
 CMD ["/app/app"]
