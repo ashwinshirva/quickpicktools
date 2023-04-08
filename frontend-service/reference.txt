@@ -4,3 +4,7 @@ Important Commands:
 Build and push docker image:
 docker build -t ashwinshirva/qpt-frontend:0.0.10 .
 docker push ashwinshirva/qpt-frontend:0.0.10
+
+Navigation Bar Design
+==========================================================
+https://codepen.io/samnorton/pen/zBYMJG
